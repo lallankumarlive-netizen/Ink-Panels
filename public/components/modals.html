@@ -1,0 +1,158 @@
+<!-- Auth Modal -->
+<div id="auth-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Login</button>
+            <button class="auth-tab" data-tab="register">Register</button>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form hidden">
+            <div class="form-group">
+                <label for="register-username">Username</label>
+                <input type="text" id="register-username" required>
+            </div>
+            <div class="form-group">
+                <label for="register-email">Email</label>
+                <input type="email" id="register-email" required>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" required>
+            </div>
+            <div class="form-group">
+                <label for="register-confirm-password">Confirm Password</label>
+                <input type="password" id="register-confirm-password" required>
+            </div>
+            <button type="submit" class="submit-btn">Register</button>
+        </form>
+    </div>
+</div>
+
+<!-- Account Modal -->
+<div id="account-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>My Account</h2>
+        <div class="account-tabs">
+            <button class="account-tab active" data-tab="profile">Profile</button>
+            <button class="account-tab" data-tab="orders">Orders</button>
+            <button class="account-tab" data-tab="wishlist">Wishlist</button>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile-section" class="account-section">
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="profile-username">Username</label>
+                    <input type="text" id="profile-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-email">Email</label>
+                    <input type="email" id="profile-email" required>
+                </div>
+                <button type="submit" class="submit-btn">Update Profile</button>
+            </form>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders-section" class="account-section hidden">
+            <div class="orders-list">
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Wishlist Section -->
+        <div id="wishlist-section" class="account-section hidden">
+            <div class="wishlist-grid">
+                <!-- Wishlist items will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Checkout</h2>
+        <div class="checkout-steps">
+            <div class="step active" data-step="shipping">
+                <span class="step-number">1</span>
+                <span class="step-text">Shipping</span>
+            </div>
+            <div class="step" data-step="payment">
+                <span class="step-number">2</span>
+                <span class="step-text">Payment</span>
+            </div>
+            <div class="step" data-step="confirmation">
+                <span class="step-number">3</span>
+                <span class="step-text">Confirmation</span>
+            </div>
+        </div>
+
+        <!-- Shipping Form -->
+        <form id="shipping-form" class="checkout-form">
+            <div class="form-group">
+                <label for="shipping-street">Street Address</label>
+                <input type="text" id="shipping-street" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="shipping-city">City</label>
+                    <input type="text" id="shipping-city" required>
+                </div>
+                <div class="form-group">
+                    <label for="shipping-state">State</label>
+                    <input type="text" id="shipping-state" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="shipping-country">Country</label>
+                    <input type="text" id="shipping-country" required>
+                </div>
+                <div class="form-group">
+                    <label for="shipping-zip">ZIP Code</label>
+                    <input type="text" id="shipping-zip" required>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Continue to Payment</button>
+        </form>
+
+        <!-- Payment Form -->
+        <form id="payment-form" class="checkout-form hidden">
+            <div id="card-element">
+                <!-- Stripe Card Element will be inserted here -->
+            </div>
+            <div id="card-errors" role="alert"></div>
+            <button type="submit" class="submit-btn">Pay Now</button>
+        </form>
+
+        <!-- Order Confirmation -->
+        <div id="order-confirmation" class="checkout-form hidden">
+            <div class="confirmation-message">
+                <i class="fas fa-check-circle"></i>
+                <h3>Order Confirmed!</h3>
+                <p>Your order has been successfully placed.</p>
+                <div class="order-details">
+                    <!-- Order details will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

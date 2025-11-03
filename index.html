@@ -3,991 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ink&Panels - Premium Manga Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <style>
-        :root {
-            --primary-color: #ff4757;
-            --primary-dark: #e84118;
-            --secondary-color: #2f3542;
-            --accent-color: #1e90ff;
-            --accent-dark: #187bcd;
-            --light-color: #f1f2f6;
-            --dark-color: #2f3542;
-            --text-color: #333;
-            --text-light: #747d8c;
-            --white: #ffffff;
-            --black: #000000;
-            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-            --transition: all 0.3s ease;
-            --border-radius: 8px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-color);
-            background-color: var(--white);
-            line-height: 1.6;
-            overflow-x: hidden;
-            padding-top: 80px;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        /* Header Styles */
-        .main-header {
-            background-color: var(--white);
-            box-shadow: var(--shadow);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            transition: var(--transition);
-        }
-
-        .main-header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-        }
-
-        .logo h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--secondary-color);
-        }
-
-        .logo span {
-            color: var(--primary-color);
-        }
-
-        .logo .tagline {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: -5px;
-        }
-
-        /* Search Bar */
-        .search-container {
-            position: relative;
-            width: 300px;
-            margin: 0 20px;
-        }
-
-        .search-container input {
-            width: 100%;
-            padding: 10px 15px;
-            padding-right: 40px;
-            border: 1px solid #ddd;
-            border-radius: 50px;
-            font-family: 'Poppins', sans-serif;
-            transition: var(--transition);
-        }
-
-        .search-container input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
-        }
-
-        #search-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
-        }
-
-        /* Navigation */
-        .main-nav ul {
-            display: flex;
-            align-items: center;
-        }
-
-        .main-nav ul li {
-            margin-left: 20px;
-        }
-
-        .main-nav ul li a {
-            font-weight: 500;
-            font-size: 15px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-        }
-
-        .main-nav ul li a i {
-            margin-right: 8px;
-            font-size: 14px;
-        }
-
-        .main-nav ul li a:hover {
-            color: var(--primary-color);
-        }
-
-        .main-nav ul li a.active {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        /* Cart Button */
-        .cart-btn {
-            position: relative;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background-color: var(--primary-color);
-            color: var(--white);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            min-height: 700px;
-            background: url('https://www.shutterstock.com/image-vector/blank-manga-comic-book-page-600nw-1988294291.jpg') no-repeat center center/cover;
-            position: relative;
-            display: flex;
-            align-items: center;
-            color: var(--white);
-            text-align: center;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .hero h2 {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: 18px;
-            margin-bottom: 40px;
-            opacity: 0.9;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 50px;
-            font-weight: 600;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
-            background-color: var(--primary-dark);
-        }
-
-        /* Manga Grid Styles */
-        .section-title {
-            text-align: center;
-            margin: 50px 0 30px;
-            font-size: 36px;
-        }
-
-        .section-title span {
-            color: var(--primary-color);
-        }
-
-        .manga-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-
-        .manga-item {
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .manga-item:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .manga-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: var(--primary-color);
-            color: var(--white);
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 2;
-        }
-
-        .manga-cover {
-            height: 380px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .manga-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-
-        .manga-item:hover .manga-cover img {
-            transform: scale(1.05);
-        }
-
-        .quick-view {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: var(--white);
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            transform: translateY(100%);
-        }
-
-        .manga-item:hover .quick-view {
-            transform: translateY(0);
-        }
-
-        .manga-info {
-            padding: 20px;
-        }
-
-        .manga-info h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .author {
-            color: var(--text-light);
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .rating {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            color: #ffc107;
-            font-size: 14px;
-        }
-
-        .rating i {
-            margin-right: 3px;
-        }
-
-        .rating span {
-            color: var(--text-light);
-            margin-left: 8px;
-        }
-
-        .price {
-            margin-bottom: 15px;
-        }
-
-        .current-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .original-price {
-            font-size: 14px;
-            color: var(--text-light);
-            text-decoration: line-through;
-            margin-left: 8px;
-        }
-
-        .manga-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .buy-button {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            flex-grow: 1;
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .buy-button i {
-            margin-right: 8px;
-        }
-
-        .buy-button:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .wishlist-button {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--light-color);
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .wishlist-button:hover {
-            color: var(--primary-color);
-            background-color: #ffebee;
-        }
-
-        .wishlist-button.active {
-            color: var(--primary-color);
-        }
-
-        /* New Releases Section */
-        .new-releases {
-            padding: 80px 0;
-            background-color: var(--light-color);
-        }
-
-        .release-carousel {
-            display: flex;
-            overflow-x: auto;
-            gap: 20px;
-            padding-bottom: 20px;
-            scroll-snap-type: x mandatory;
-        }
-
-        .release-carousel::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .release-carousel::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .release-carousel::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 10px;
-        }
-
-        .release-item {
-            flex: 0 0 280px;
-            scroll-snap-align: start;
-            background-color: var(--white);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-
-        .release-item:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .release-item img {
-            width: 100%;
-            height: 380px;
-            object-fit: cover;
-        }
-
-        .release-info {
-            padding: 15px;
-        }
-
-        .release-info h3 {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .pre-order {
-            background-color: var(--accent-color);
-            color: var(--white);
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            width: 100%;
-        }
-
-        .pre-order:hover {
-            background-color: var(--accent-dark);
-        }
-
-        /* Quick View Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            background-color: var(--white);
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: var(--border-radius);
-            width: 80%;
-            max-width: 800px;
-            position: relative;
-            animation: modalFadeIn 0.3s;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-light);
-        }
-
-        .close-modal:hover {
-            color: var(--primary-color);
-        }
-
-        .modal-body {
-            display: flex;
-            gap: 30px;
-        }
-
-        .modal-cover {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .modal-cover img {
-            width: 100%;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-        }
-
-        .modal-details {
-            flex: 2;
-        }
-
-        .modal-details h2 {
-            margin-bottom: 15px;
-            color: var(--primary-color);
-        }
-
-        .meta-info {
-            display: flex;
-            gap: 15px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            background: var(--light-color);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .description {
-            margin: 20px 0;
-            line-height: 1.8;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .buy-now {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .buy-now:hover {
-            background-color: var(--primary-dark);
-        }
-
-        /* Cart Sidebar */
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 400px;
-            height: 100%;
-            background-color: var(--white);
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-            z-index: 2000;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-sidebar.active {
-            right: 0;
-        }
-
-        .cart-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1999;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .cart-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .cart-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-header h3 {
-            font-size: 24px;
-        }
-
-        .close-cart {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-light);
-            transition: var(--transition);
-        }
-
-        .close-cart:hover {
-            color: var(--primary-color);
-        }
-
-        .cart-items {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .cart-item {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .cart-item-img {
-            width: 80px;
-            height: 120px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .cart-item-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .cart-item-details {
-            flex: 1;
-        }
-
-        .cart-item-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .cart-item-price {
-            color: var(--primary-color);
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .cart-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .quantity-btn {
-            width: 30px;
-            height: 30px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .quantity-input {
-            width: 40px;
-            text-align: center;
-            border: none;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
-            padding: 5px;
-        }
-
-        .remove-item {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .remove-item:hover {
-            color: var(--primary-color);
-        }
-
-        .cart-footer {
-            padding: 20px;
-            border-top: 1px solid #eee;
-        }
-
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .checkout-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        /* Contact Section */
-        .contact-section {
-            padding: 80px 0;
-            background-color: var(--white);
-        }
-
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .contact-form input,
-        .contact-form textarea {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .contact-form textarea {
-            height: 150px;
-            resize: vertical;
-        }
-
-        .submit-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            width: 100%;
-        }
-
-        .submit-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        /* Notification Styles */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1001;
-        }
-
-        .notification.show {
-            opacity: 1;
-        }
-
-        .notification i {
-            font-size: 20px;
-        }
-
-        .notification.error {
-            background-color: #e74c3c;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 992px) {
-            .modal-body {
-                flex-direction: column;
-            }
-
-            .modal-cover {
-                margin-bottom: 20px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-header .container {
-                flex-wrap: wrap;
-            }
-
-            .search-container {
-                order: 3;
-                width: 100%;
-                margin: 15px 0;
-            }
-
-            .hero h2 {
-                font-size: 36px;
-            }
-
-            .section-title {
-                font-size: 30px;
-            }
-
-            .cart-sidebar {
-                width: 100%;
-                max-width: 400px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .hero h2 {
-                font-size: 28px;
-            }
-
-            .section-title {
-                font-size: 24px;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 20px;
-            }
-        }
-    </style>
+    <title>Ink Panels - Manga Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="container">
+    <header>
+        <div class="header-content">
             <div class="logo">
-                <h1><span>Ink&Panels</span></h1>
-                <p class="tagline">Your premium manga destination</p>
+                <h1>Ink Panels</h1>
             </div>
-
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search manga...">
-                <button id="search-btn"><i class="fas fa-search"></i></button>
-            </div>
-
             <nav class="main-nav">
                 <ul>
                     <li><a href="#new-releases"><i class="fas fa-star"></i> New Releases</a></li>
                     <li><a href="#cart" class="cart-btn"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
                     <li><a href="#shop"><i class="fas fa-book"></i> Shop</a></li>
                     <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li class="auth-section">
+                        <a href="/auth.html" class="auth-link"><i class="fas fa-user"></i> Sign In</a>
+                    </li>
+                    <li class="user-section hidden">
+                        <div class="user-menu">
+                            <button class="user-menu-btn">
+                                <i class="fas fa-user-circle"></i>
+                                <span class="username">User</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="user-dropdown">
+                                <a href="#profile"><i class="fas fa-user"></i> Profile</a>
+                                <a href="#orders"><i class="fas fa-box"></i> Orders</a>
+                                <a href="#wishlist"><i class="fas fa-heart"></i> Wishlist</a>
+                                <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-overlay"></div>
-        <div class="container">
+    <main>
+        <section class="hero">
             <div class="hero-content">
-                <h2>Discover Your Next <span>Manga Adventure</span></h2>
-                <p>Explore our curated collection of premium Japanese manga with worldwide shipping</p>
-                <a href="#shop" class="cta-button">Browse Collection</a>
+                <h2>Welcome to Ink Panels</h2>
+                <p>Your one-stop shop for the best manga collection</p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- New Releases -->
-    <section id="new-releases" class="new-releases">
-        <div class="container">
-            <h2 class="section-title">New <span>Releases</span></h2>
-            <div class="release-carousel" id="new-releases-container">
-                <!-- New releases will be loaded here -->
+        <section id="new-releases" class="section">
+            <h2>New Releases</h2>
+            <div class="product-grid">
+                <!-- Products will be loaded here -->
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Featured Manga -->
-    <section id="shop" class="container">
-        <h2 class="section-title">Featured <span>Manga</span></h2>
-        <div class="manga-grid" id="featured-manga">
-            <!-- Featured manga will be loaded here -->
-        </div>
-    </section>
+        <section id="shop" class="section">
+            <h2>Shop</h2>
+            <div class="product-grid">
+                <!-- Products will be loaded here -->
+            </div>
+        </section>
+    </main>
 
-    <!-- Quick View Modal -->
-    <div id="quick-view-modal" class="modal">
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="modal-body">
-                <!-- Content will be loaded here -->
+            <span class="close">&times;</span>
+            <h2>Your Cart</h2>
+            <div class="cart-items">
+                <!-- Cart items will be loaded here -->
             </div>
-        </div>
-    </div>
-
-    <!-- Cart Sidebar -->
-    <div id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button class="close-cart"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="cart-items" id="cart-items-container">
-            <!-- Cart items will be loaded here -->
-        </div>
-        <div class="cart-footer">
             <div class="cart-total">
                 <span>Total:</span>
                 <span class="total-amount">$0.00</span>
@@ -995,502 +80,110 @@
             <button class="checkout-btn">Proceed to Checkout</button>
         </div>
     </div>
-    <div class="cart-overlay"></div>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <h2 class="section-title">Contact <span>Us</span></h2>
-            <form class="contact-form" id="contact-form">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <textarea placeholder="Your Message" required></textarea>
-                <button type="submit" class="submit-btn">Send Message</button>
-            </form>
-        </div>
-    </section>
-
-    <script>
-        // Manga Database
-        const mangaDatabase = [
-            // New Releases
-            {
-                id: "jujutsu-kaisen",
-                title: "Jujutsu Kaisen Vol. 1",
-                author: "Gege Akutami",
-                description: "Yuji Itadori eats a cursed finger to save his friends and becomes the host of Ryomen Sukuna, a powerful curse. Now he must train as a jujutsu sorcerer to control Sukuna's power and fight other curses.",
-                rating: 4.7,
-                reviewCount: 2894,
-                price: 9.99,
-                volumes: 18,
-                genre: ["Supernatural", "Horror", "Action"],
-                image: "https://m.media-amazon.com/images/I/81XO20bHFjL.jpg",
-                badges: ["New Release"]
-            },
-            {
-                id: "chainsaw-man",
-                title: "Chainsaw Man Vol. 1",
-                author: "Tatsuki Fujimoto",
-                description: "Denji is a young man trapped in poverty who works as a Devil Hunter with his pet devil Pochita. After being betrayed and killed, Denji is revived by Pochita and becomes Chainsaw Man - a man with a devil's heart.",
-                rating: 4.8,
-                reviewCount: 3125,
-                price: 9.99,
-                volumes: 11,
-                genre: ["Dark Fantasy", "Horror", "Action"],
-                image: "https://m.media-amazon.com/images/I/91mXuRtoS7L._UF1000,1000_QL80_.jpg",
-                badges: ["Bestseller"]
-            },
-            {
-                id: "my-hero-academia",
-                title: "My Hero Academia Vol. 1",
-                author: "Kohei Horikoshi",
-                description: "In a world where most people have superpowers called Quirks, Izuku Midoriya dreams of becoming a hero despite being born Quirkless. When he meets the legendary hero All Might, his life changes forever.",
-                rating: 4.6,
-                reviewCount: 3876,
-                price: 9.99,
-                volumes: 34,
-                genre: ["Superhero", "Action", "School"],
-                image: "https://m.media-amazon.com/images/I/815rJRMLqqL.jpg",
-                badges: ["Popular"]
-            },
-            {
-                id: "one-piece",
-                title: "One Piece Vol. 1",
-                author: "Eiichiro Oda",
-                description: "Monkey D. Luffy gains elastic powers after eating a Devil Fruit and sets out on a journey to become the Pirate King by finding the legendary treasure known as 'One Piece'.",
-                rating: 4.9,
-                reviewCount: 8765,
-                price: 7.99,
-                originalPrice: 9.99,
-                volumes: 101,
-                genre: ["Adventure", "Fantasy", "Action"],
-                image: "https://m.media-amazon.com/images/I/71y+XnBXm4L.jpg",
-                badges: ["Classic"]
-            },
-
-            // Featured Manga
-            {
-                id: "death-note",
-                title: "Death Note Vol. 1",
-                author: "Tsugumi Ohba, Takeshi Obata",
-                description: "Light Yagami finds a mysterious notebook called the Death Note that grants him the power to kill anyone whose name he writes in it. He begins a crusade to cleanse the world of criminals as the god-like vigilante 'Kira'.",
-                rating: 4.7,
-                reviewCount: 2543,
-                price: 12.99,
-                originalPrice: 15.99,
-                volumes: 12,
-                genre: ["Psychological Thriller", "Supernatural", "Mystery"],
-                image: "https://m.media-amazon.com/images/I/81iDNjn-r3L._AC_UF1000,1000_QL80_.jpg",
-                badges: ["Bestseller"]
-            },
-            {
-                id: "attack-on-titan",
-                title: "Attack on Titan Vol. 1",
-                author: "Hajime Isayama",
-                description: "Humanity lives in cities surrounded by enormous walls due to the Titans, gigantic humanoid creatures who devour humans. Eren Yeager vows to exterminate the Titans after they destroy his hometown.",
-                rating: 4.9,
-                reviewCount: 3217,
-                price: 9.99,
-                volumes: 34,
-                genre: ["Dark Fantasy", "Action", "Horror"],
-                image: "https://m.media-amazon.com/images/I/51QWSFImgvL._SY780_.jpg",
-                badges: ["Popular"]
-            },
-            {
-                id: "naruto",
-                title: "Naruto Vol. 1",
-                author: "Masashi Kishimoto",
-                description: "Naruto Uzumaki is a young ninja who seeks recognition from his peers and dreams of becoming the Hokage, the leader of his village. The story follows his adventures and growth as a ninja.",
-                rating: 4.5,
-                reviewCount: 5432,
-                price: 8.99,
-                originalPrice: 10.99,
-                volumes: 72,
-                genre: ["Adventure", "Martial Arts", "Fantasy"],
-                image: "https://m.media-amazon.com/images/I/91FPoNmEUsL._UF1000,1000_QL80_.jpg",
-                badges: ["Classic"]
-            },
-            {
-                id: "demon-slayer",
-                title: "Demon Slayer Vol. 1",
-                author: "Koyoharu Gotouge",
-                description: "Tanjiro Kamado, a kindhearted boy who sells charcoal, finds his family slaughtered by a demon. His younger sister Nezuko is the sole survivor, but has been transformed into a demon herself.",
-                rating: 4.8,
-                reviewCount: 4129,
-                price: 10.49,
-                originalPrice: 12.99,
-                volumes: 23,
-                genre: ["Dark Fantasy", "Martial Arts", "Supernatural"],
-                image: "https://m.media-amazon.com/images/I/81DjuU26RrL.jpg",
-                badges: ["Popular"]
-            }
-        ];
-
-        // Cart System
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const cartCountElement = document.querySelector('.cart-count');
-        const cartItemsContainer = document.getElementById('cart-items-container');
-        const cartTotalElement = document.querySelector('.total-amount');
-        const cartSidebar = document.getElementById('cart-sidebar');
-        const cartOverlay = document.querySelector('.cart-overlay');
-        const closeCartBtn = document.querySelector('.close-cart');
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadNewReleases();
-            loadFeaturedManga();
-            updateCartCount();
-            setupEventListeners();
-        });
-
-        function loadNewReleases() {
-            const container = document.getElementById('new-releases-container');
-            const newReleases = mangaDatabase.slice(0, 4); // First 4 items are new releases
-
-            container.innerHTML = newReleases.map(manga => `
-                <div class="release-item" data-manga-id="${manga.id}">
-                    <div class="manga-cover">
-                        <img src="${manga.image}" alt="${manga.title}" loading="lazy">
-                    </div>
-                    <div class="release-info">
-                        <h3>${manga.title}</h3>
-                        <p class="author">${manga.author}</p>
-                        <div class="price">
-                            <span class="current-price">$${manga.price.toFixed(2)}</span>
-                            ${manga.originalPrice ? `<span class="original-price">$${manga.originalPrice.toFixed(2)}</span>` : ''}
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>User Profile</h2>
+            <div class="profile-info">
+                <div class="profile-section">
+                    <h3>Personal Information</h3>
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" readonly>
                         </div>
-                        <button class="pre-order" data-manga-id="${manga.id}">Pre-order</button>
-                    </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" name="fullName">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Shipping Address</label>
+                            <textarea id="address" name="address"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Update Profile</button>
+                    </form>
                 </div>
-            `).join('');
-        }
+            </div>
+        </div>
+    </div>
 
-        function loadFeaturedManga() {
-            const container = document.getElementById('featured-manga');
-            const featuredManga = mangaDatabase.slice(4); // Last 4 items are featured
-
-            container.innerHTML = featuredManga.map(manga => `
-                <div class="manga-item" data-manga-id="${manga.id}">
-                    ${manga.badges ? manga.badges.map(badge => `<div class="manga-badge">${badge}</div>`).join('') : ''}
-                    <div class="manga-cover">
-                        <img src="${manga.image}" alt="${manga.title}" loading="lazy">
-                        <div class="quick-view" data-manga-id="${manga.id}">Quick View</div>
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Checkout</h2>
+            <div class="checkout-steps">
+                <div class="step active" data-step="1">1. Review Cart</div>
+                <div class="step" data-step="2">2. Shipping</div>
+                <div class="step" data-step="3">3. Payment</div>
+            </div>
+            <div class="checkout-content">
+                <!-- Step 1: Cart Review -->
+                <div class="checkout-step" data-step="1">
+                    <div class="cart-items"></div>
+                    <div class="cart-total">
+                        <span>Total:</span>
+                        <span class="total-amount">$0.00</span>
                     </div>
-                    <div class="manga-info">
-                        <h3>${manga.title}</h3>
-                        <p class="author">${manga.author}</p>
-                        <div class="rating">
-                            ${generateStarRating(manga.rating)}
-                            <span>${manga.rating} (${manga.reviewCount})</span>
+                    <button class="btn next-step">Continue to Shipping</button>
+                </div>
+
+                <!-- Step 2: Shipping -->
+                <div class="checkout-step" data-step="2" style="display: none;">
+                    <form id="shipping-form">
+                        <div class="form-group">
+                            <label for="shipping-name">Full Name</label>
+                            <input type="text" id="shipping-name" required>
                         </div>
-                        <div class="price">
-                            <span class="current-price">$${manga.price.toFixed(2)}</span>
-                            ${manga.originalPrice ? `<span class="original-price">$${manga.originalPrice.toFixed(2)}</span>` : ''}
+                        <div class="form-group">
+                            <label for="shipping-address">Address</label>
+                            <textarea id="shipping-address" required></textarea>
                         </div>
-                        <div class="manga-actions">
-                            <button class="buy-button" data-manga-id="${manga.id}">
-                                <i class="fas fa-cart-plus"></i> Add to Cart
-                            </button>
-                            <button class="wishlist-button"><i class="far fa-heart"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        `).join('');
-                                    }
+                        <div class="form-group">
+                            <label for="shipping-city">City</label>
+                            <input type="text" id="shipping-city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="shipping-zip">ZIP Code</label>
+                            <input type="text" id="shipping-zip" required>
+                        </div>
+                        <button type="button" class="btn prev-step">Back</button>
+                        <button type="button" class="btn next-step">Continue to Payment</button>
+                    </form>
+                </div>
 
-                                    function generateStarRating(rating) {
-                                        const fullStars = Math.floor(rating);
-                                        const hasHalfStar = rating % 1 >= 0.5;
-                                        let stars = '';
+                <!-- Step 3: Payment -->
+                <div class="checkout-step" data-step="3" style="display: none;">
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <div id="card-number" class="razorpay-field"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-expiry">Expiry Date</label>
+                                <div id="card-expiry" class="razorpay-field"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="card-cvv">CVV</label>
+                                <div id="card-cvv" class="razorpay-field"></div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn prev-step">Back</button>
+                        <button type="submit" class="btn place-order">Place Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                        for (let i = 0; i < fullStars; i++) {
-                                            stars += '<i class="fas fa-star"></i>';
-                                        }
-
-                                        if (hasHalfStar) {
-                                            stars += '<i class="fas fa-star-half-alt"></i>';
-                                        }
-
-                                        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-                                        for (let i = 0; i < emptyStars; i++) {
-                                            stars += '<i class="far fa-star"></i>';
-                                        }
-
-                                        return stars;
-                                    }
-
-                                    function setupEventListeners() {
-                                        // Cart toggle
-                                        document.querySelector('.cart-btn').addEventListener('click', toggleCart);
-                                        closeCartBtn.addEventListener('click', toggleCart);
-                                        cartOverlay.addEventListener('click', toggleCart);
-
-                                        // Add to cart buttons
-                                        document.addEventListener('click', function(e) {
-                                            if (e.target.closest('.buy-button, .pre-order')) {
-                                                e.preventDefault();
-                                                const mangaId = e.target.closest('[data-manga-id]').dataset.mangaId;
-                                                addToCart(mangaId);
-                                            }
-                                        });
-
-                                        // Quick view buttons
-                                        document.addEventListener('click', function(e) {
-                                            if (e.target.closest('.quick-view')) {
-                                                const mangaId = e.target.closest('[data-manga-id]').dataset.mangaId;
-                                                showQuickView(mangaId);
-                                            }
-                                        });
-
-                                        // Close modal
-                                        document.querySelector('.close-modal').addEventListener('click', closeModal);
-                                        document.addEventListener('click', function(e) {
-                                            if (e.target === document.getElementById('quick-view-modal')) {
-                                                closeModal();
-                                            }
-                                        });
-
-                                        // Search functionality
-                                        document.getElementById('search-btn').addEventListener('click', searchManga);
-                                        document.getElementById('search-input').addEventListener('keypress', function(e) {
-                                            if (e.key === 'Enter') searchManga();
-                                        });
-
-                                        // Contact form
-                                        document.getElementById('contact-form').addEventListener('submit', function(e) {
-                                            e.preventDefault();
-                                            const formData = new FormData(this);
-                                            const message = {
-                                                name: formData.get('name'),
-                                                email: formData.get('email'),
-                                                message: formData.get('message')
-                                            };
-
-                                            // In a real app, this would send to aviraly26@gmail.com
-                                            console.log('Message to send:', message);
-                                            showNotification('Your message has been sent! We will contact you soon.');
-                                            this.reset();
-                                        });
-
-                                        // Cart quantity controls
-                                        document.addEventListener('click', function(e) {
-                                            if (e.target.closest('.quantity-btn.increase')) {
-                                                const mangaId = e.target.closest('.cart-item').dataset.mangaId;
-                                                updateCartItem(mangaId, 1);
-                                            } else if (e.target.closest('.quantity-btn.decrease')) {
-                                                const mangaId = e.target.closest('.cart-item').dataset.mangaId;
-                                                updateCartItem(mangaId, -1);
-                                            } else if (e.target.closest('.remove-item')) {
-                                                const mangaId = e.target.closest('.cart-item').dataset.mangaId;
-                                                removeFromCart(mangaId);
-                                            }
-                                        });
-
-                                        // Checkout button
-                                        document.querySelector('.checkout-btn').addEventListener('click', function() {
-                                            if (cart.length > 0) {
-                                                showNotification('Proceeding to checkout!', 'success');
-                                                // In a real app, this would redirect to checkout page
-                                            } else {
-                                                showNotification('Your cart is empty!', 'error');
-                                            }
-                                        });
-                                    }
-
-                                    function toggleCart() {
-                                        cartSidebar.classList.toggle('active');
-                                        cartOverlay.classList.toggle('active');
-                                        document.body.style.overflow = cartSidebar.classList.contains('active') ? 'hidden' : 'auto';
-
-                                        if (cartSidebar.classList.contains('active')) {
-                                            renderCartItems();
-                                        }
-                                    }
-
-                                    function addToCart(mangaId) {
-                                        const manga = mangaDatabase.find(m => m.id === mangaId);
-                                        const existingItem = cart.find(item => item.id === mangaId);
-
-                                        if (existingItem) {
-                                            existingItem.quantity += 1;
-                                        } else {
-                                            cart.push({
-                                                ...manga,
-                                                quantity: 1
-                                            });
-                                        }
-
-                                        localStorage.setItem('cart', JSON.stringify(cart));
-                                        updateCartCount();
-                                        showNotification(`${manga.title} added to cart!`);
-                                    }
-
-                                    function updateCartItem(mangaId, change) {
-                                        const item = cart.find(item => item.id === mangaId);
-
-                                        if (item) {
-                                            item.quantity += change;
-
-                                            if (item.quantity <= 0) {
-                                                cart = cart.filter(item => item.id !== mangaId);
-                                            }
-
-                                            localStorage.setItem('cart', JSON.stringify(cart));
-                                            renderCartItems();
-                                            updateCartCount();
-                                        }
-                                    }
-
-                                    function removeFromCart(mangaId) {
-                                        cart = cart.filter(item => item.id !== mangaId);
-                                        localStorage.setItem('cart', JSON.stringify(cart));
-                                        renderCartItems();
-                                        updateCartCount();
-                                        showNotification('Item removed from cart', 'error');
-                                    }
-
-                                    function renderCartItems() {
-                                        if (cart.length === 0) {
-                                            cartItemsContainer.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
-                                            cartTotalElement.textContent = '$0.00';
-                                            return;
-                                        }
-
-                                        cartItemsContainer.innerHTML = cart.map(item => `
-                                            <div class="cart-item" data-manga-id="${item.id}">
-                                                <div class="cart-item-img">
-                                                    <img src="${item.image}" alt="${item.title}">
-                                                </div>
-                                                <div class="cart-item-details">
-                                                    <h4 class="cart-item-title">${item.title}</h4>
-                                                    <p class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</p>
-                                                    <div class="cart-item-actions">
-                                                        <div class="quantity-control">
-                                                            <button class="quantity-btn decrease">-</button>
-                                                            <input type="text" class="quantity-input" value="${item.quantity}" readonly>
-                                                            <button class="quantity-btn increase">+</button>
-                                                        </div>
-                                                        <button class="remove-item"><i class="fas fa-trash"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        `).join('');
-
-                                        // Calculate total
-                                        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                                        cartTotalElement.textContent = `$${total.toFixed(2)}`;
-                                    }
-
-                                    function updateCartCount() {
-                                        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-                                        cartCountElement.textContent = totalItems;
-                                    }
-
-                                    function showQuickView(mangaId) {
-                                        const manga = mangaDatabase.find(m => m.id === mangaId);
-                                        const modalBody = document.querySelector('.modal-body');
-
-                                        modalBody.innerHTML = `
-                                            <div class="modal-cover">
-                                                <img src="${manga.image}" alt="${manga.title}">
-                                            </div>
-                                            <div class="modal-details">
-                                                <h2>${manga.title}</h2>
-                                                <p class="author">By ${manga.author}</p>
-                                                <div class="rating">
-                                                    ${generateStarRating(manga.rating)}
-                                                    <span>${manga.rating} (${manga.reviewCount} reviews)</span>
-                                                </div>
-                                                <div class="meta-info">
-                                                    <span class="meta-item">${manga.volumes} Volumes</span>
-                                                    <span class="meta-item">${manga.genre.join(', ')}</span>
-                                                </div>
-                                                <div class="description">
-                                                    <p>${manga.description}</p>
-                                                </div>
-                                                <div class="price">
-                                                    <span class="current-price">$${manga.price.toFixed(2)}</span>
-                                                    ${manga.originalPrice ? `<span class="original-price">$${manga.originalPrice.toFixed(2)}</span>` : ''}
-                                                </div>
-                                                <div class="modal-actions">
-                                                    <button class="buy-now" data-manga-id="${manga.id}">Buy Now</button>
-                                                    <button class="buy-button" data-manga-id="${manga.id}">
-                                                        <i class="fas fa-cart-plus"></i> Add to Cart
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        `;
-
-                                        document.getElementById('quick-view-modal').style.display = 'block';
-                                        document.body.style.overflow = 'hidden';
-
-                                        // Add event listeners to modal buttons
-                                        modalBody.querySelector('.buy-now').addEventListener('click', function() {
-                                            addToCart(mangaId);
-                                            showNotification('Proceeding to checkout!', 'success');
-                                            closeModal();
-                                            toggleCart();
-                                        });
-
-                                        modalBody.querySelector('.buy-button').addEventListener('click', function() {
-                                            addToCart(mangaId);
-                                            closeModal();
-                                        });
-                                    }
-
-                                    function closeModal() {
-                                        document.getElementById('quick-view-modal').style.display = 'none';
-                                        document.body.style.overflow = 'auto';
-                                    }
-
-                                    function searchManga() {
-                                        const term = document.getElementById('search-input').value.toLowerCase();
-                                        const mangaItems = document.querySelectorAll('.manga-item, .release-item');
-
-                                        mangaItems.forEach(item => {
-                                            const title = item.querySelector('h3').textContent.toLowerCase();
-                                            const author = item.querySelector('.author').textContent.toLowerCase();
-
-                                            if (title.includes(term) || author.includes(term)) {
-                                                item.style.display = 'block';
-                                            } else {
-                                                item.style.display = 'none';
-                                            }
-                                        });
-                                    }
-
-                                    function showNotification(message, type = 'success') {
-                                        const notification = document.createElement('div');
-                                        notification.className = `notification ${type}`;
-                                        notification.innerHTML = `
-                                            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                                            <span>${message}</span>
-                                        `;
-                                        document.body.appendChild(notification);
-
-                                        setTimeout(() => {
-                                            notification.classList.add('show');
-                                        }, 10);
-
-                                        setTimeout(() => {
-                                            notification.classList.remove('show');
-                                            setTimeout(() => {
-                                                document.body.removeChild(notification);
-                                            }, 300);
-                                        }, 3000);
-                                    }
-
-                                    // Close modals with Escape key
-                                    document.addEventListener('keydown', function(e) {
-                                        if (e.key === 'Escape') {
-                                            if (document.getElementById('quick-view-modal').style.display === 'block') {
-                                                closeModal();
-                                            }
-                                            if (cartSidebar.classList.contains('active')) {
-                                                toggleCart();
-                                            }
-                                        }
-                                    });
-                                </script>
-                            </body>
-                            </html>
+    <script src="script.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+</html>
