@@ -1,0 +1,53 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  shippingAddress: String
+  billingAddress: String
+  phoneNumber: String
+  isSeller: Boolean
+}
+
+type Book @table {
+  title: String!
+  author: String!
+  price: Float!
+  ISBN: String!
+  publisher: String!
+  publicationYear: Int!
+  quantityInStock: Int!
+  createdAt: Timestamp!
+  description: String
+  genre: String
+  imageUrl: String
+}
+
+type Order @table {
+  user: User!
+  orderDate: Timestamp!
+  totalAmount: Float!
+  shippingAddress: String!
+  status: String!
+  createdAt: Timestamp!
+}
+
+type OrderItem @table(key: ["order", "book"]) {
+  order: Order!
+  book: Book!
+  quantity: Int!
+  priceAtPurchase: Float!
+}
+
+type Review @table {
+  user: User!
+  book: Book!
+  rating: Int!
+  reviewText: String!
+  createdAt: Timestamp!
+}
+
+type CartItem @table(key: ["user", "book"]) {
+  user: User!
+  book: Book!
+  quantity: Int!
+}
