@@ -68,9 +68,26 @@
         }
 
         .logo h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo .brand-mark {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            box-shadow: var(--shadow);
+            font-size: 18px;
         }
 
         .logo span {
@@ -918,7 +935,7 @@
     <header class="main-header">
         <div class="container">
             <div class="logo">
-                <h1><span>Ink&Panels</span></h1>
+                <h1><span class="brand-mark">IP</span><span>Ink&Panels</span></h1>
                 <p class="tagline">Your premium manga destination</p>
             </div>
 
@@ -1044,6 +1061,12 @@
             </form>
         </div>
     </section>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="/js/firebase.js"></script>
 
     <script>
         // Manga Database
@@ -1256,22 +1279,28 @@
                                     }
 
                                     function initAuthState() {
-                                        const token = localStorage.getItem('token');
-                                        const userSection = document.querySelector('.user-section');
-                                        const authSection = document.querySelector('.auth-section');
-                                        const usernameEl = document.querySelector('.username');
+                                                                    const userSection = document.querySelector('.user-section');
+                                                                    const authSection = document.querySelector('.auth-section');
+                                                                    const usernameEl = document.querySelector('.username');
 
-                                        if (token) {
-                                            // Show user section; try to use stored user info if available
-                                            const stored = JSON.parse(localStorage.getItem('user') || '{}');
-                                            if (stored.username) usernameEl.textContent = stored.username;
-                                            if (authSection) authSection.style.display = 'none';
-                                            if (userSection) userSection.classList.remove('hidden');
-                                        } else {
-                                            if (authSection) authSection.style.display = 'block';
-                                            if (userSection) userSection.classList.add('hidden');
-                                        }
-                                    }
+                                                                    // Use Firebase auth state
+                                                                    firebaseAuth.onAuthStateChanged(async (user) => {
+                                                                        if (user && user.emailVerified) {
+                                                                            // show user
+                                                                            usernameEl.textContent = user.displayName || (JSON.parse(localStorage.getItem('user') || '{}').username || 'User');
+                                                                            if (authSection) authSection.style.display = 'none';
+                                                                            if (userSection) userSection.classList.remove('hidden');
+                                                                            // refresh token into localStorage
+                                                                            const token = await user.getIdToken();
+                                                                            localStorage.setItem('token', token);
+                                                                            localStorage.setItem('user', JSON.stringify({ username: user.displayName || '', email: user.email, uid: user.uid }));
+                                                                        } else {
+                                                                            if (authSection) authSection.style.display = 'block';
+                                                                            if (userSection) userSection.classList.add('hidden');
+                                                                            localStorage.removeItem('token');
+                                                                        }
+                                                                    });
+                                                                }
 
                                     function setupEventListeners() {
                                         // Cart toggle
@@ -1370,18 +1399,23 @@
                                             }
                                         });
 
-                                        // Logout
+                                        // Logout (use Firebase)
                                         const logoutBtn = document.querySelector('.logout-btn');
                                         if (logoutBtn) {
-                                            logoutBtn.addEventListener('click', function(e) {
+                                            logoutBtn.addEventListener('click', async function(e) {
                                                 e.preventDefault();
+                                                try {
+                                                    await signOutFirebase();
+                                                } catch (err) {
+                                                    console.warn('Sign out error', err);
+                                                }
                                                 localStorage.removeItem('token');
                                                 localStorage.removeItem('user');
                                                 showNotification('You have been logged out.', 'success');
                                                 // Update header UI quickly
                                                 document.querySelector('.auth-section').style.display = 'block';
                                                 document.querySelector('.user-section').classList.add('hidden');
-                                                setTimeout(() => window.location.reload(), 800);
+                                                setTimeout(() => window.location.reload(), 600);
                                             });
                                         }
 
@@ -1582,43 +1616,33 @@
                                     }
 
                                     async function showProfileModal() {
-                                        const token = localStorage.getItem('token');
                                         const modal = document.getElementById('profile-modal');
+                                        const user = firebaseAuth.currentUser;
 
-                                        if (!token) {
-                                            // If not logged in, redirect to auth page
+                                        if (!user) {
                                             showNotification('Please sign in to view your profile.', 'error');
-                                            setTimeout(() => window.location.href = '/auth.html', 800);
+                                            setTimeout(() => window.location.href = '/auth.html', 600);
                                             return;
                                         }
 
-                                        // Try to fetch user profile from API, fallback to localStorage
-                                        try {
-                                            const res = await fetch('/api/auth/verify', {
-                                                headers: { 'Authorization': `Bearer ${token}` }
-                                            });
+                                        // Populate fields from Firebase Auth and Firestore
+                                        document.getElementById('profile-username').value = user.displayName || '';
+                                        document.getElementById('profile-email').value = user.email || '';
 
-                                            if (res.ok) {
-                                                const user = await res.json();
-                                                document.getElementById('profile-username').value = user.username || '';
-                                                document.getElementById('profile-email').value = user.email || '';
-                                                document.getElementById('profile-fullname').value = user.fullName || '';
-                                                document.getElementById('profile-address').value = user.address || '';
+                                        try {
+                                            const doc = await firebaseFirestore.collection('users').doc(user.uid).get();
+                                            if (doc.exists) {
+                                                const data = doc.data();
+                                                document.getElementById('profile-fullname').value = data.fullName || data.username || '';
+                                                document.getElementById('profile-address').value = data.address || '';
                                             } else {
-                                                // fallback
+                                                // fallback to localStorage
                                                 const stored = JSON.parse(localStorage.getItem('user') || '{}');
-                                                document.getElementById('profile-username').value = stored.username || '';
-                                                document.getElementById('profile-email').value = stored.email || '';
                                                 document.getElementById('profile-fullname').value = stored.fullName || '';
                                                 document.getElementById('profile-address').value = stored.address || '';
                                             }
                                         } catch (err) {
-                                            console.warn('Profile fetch failed', err);
-                                            const stored = JSON.parse(localStorage.getItem('user') || '{}');
-                                            document.getElementById('profile-username').value = stored.username || '';
-                                            document.getElementById('profile-email').value = stored.email || '';
-                                            document.getElementById('profile-fullname').value = stored.fullName || '';
-                                            document.getElementById('profile-address').value = stored.address || '';
+                                            console.warn('Error reading user profile from Firestore', err);
                                         }
 
                                         modal.style.display = 'block';
