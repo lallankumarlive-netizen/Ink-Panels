@@ -986,6 +986,23 @@
         </div>
     </section>
 
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal profile-close">&times;</span>
+            <div class="modal-body">
+                <h2>User Profile</h2>
+                <form id="profile-form" class="contact-form">
+                    <input type="text" id="profile-username" placeholder="Username" readonly>
+                    <input type="email" id="profile-email" placeholder="Email" readonly>
+                    <input type="text" id="profile-fullname" placeholder="Full name">
+                    <textarea id="profile-address" placeholder="Shipping address"></textarea>
+                    <button type="submit" class="submit-btn">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Quick View Modal -->
     <div id="quick-view-modal" class="modal">
         <div class="modal-content">
@@ -1158,6 +1175,7 @@
             loadNewReleases();
             loadFeaturedManga();
             updateCartCount();
+            initAuthState();
             setupEventListeners();
         });
 
@@ -1237,15 +1255,33 @@
                                         return stars;
                                     }
 
+                                    function initAuthState() {
+                                        const token = localStorage.getItem('token');
+                                        const userSection = document.querySelector('.user-section');
+                                        const authSection = document.querySelector('.auth-section');
+                                        const usernameEl = document.querySelector('.username');
+
+                                        if (token) {
+                                            // Show user section; try to use stored user info if available
+                                            const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                                            if (stored.username) usernameEl.textContent = stored.username;
+                                            if (authSection) authSection.style.display = 'none';
+                                            if (userSection) userSection.classList.remove('hidden');
+                                        } else {
+                                            if (authSection) authSection.style.display = 'block';
+                                            if (userSection) userSection.classList.add('hidden');
+                                        }
+                                    }
+
                                     function setupEventListeners() {
                                         // Cart toggle
                                         document.querySelector('.cart-btn').addEventListener('click', toggleCart);
                                         closeCartBtn.addEventListener('click', toggleCart);
                                         cartOverlay.addEventListener('click', toggleCart);
 
-                                        // Add to cart buttons
+                                        // Add to cart buttons (delegated)
                                         document.addEventListener('click', function(e) {
-                                            if (e.target.closest('.buy-button, .pre-order')) {
+                                            if (e.target.closest('.buy-button, .pre-order, .buy-now')) {
                                                 e.preventDefault();
                                                 const mangaId = e.target.closest('[data-manga-id]').dataset.mangaId;
                                                 addToCart(mangaId);
@@ -1260,11 +1296,14 @@
                                             }
                                         });
 
-                                        // Close modal
-                                        document.querySelector('.close-modal').addEventListener('click', closeModal);
+                                        // Close quick view modal
+                                        document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', closeModal));
                                         document.addEventListener('click', function(e) {
                                             if (e.target === document.getElementById('quick-view-modal')) {
                                                 closeModal();
+                                            }
+                                            if (e.target === document.getElementById('profile-modal')) {
+                                                closeProfileModal();
                                             }
                                         });
 
@@ -1275,20 +1314,15 @@
                                         });
 
                                         // Contact form
-                                        document.getElementById('contact-form').addEventListener('submit', function(e) {
-                                            e.preventDefault();
-                                            const formData = new FormData(this);
-                                            const message = {
-                                                name: formData.get('name'),
-                                                email: formData.get('email'),
-                                                message: formData.get('message')
-                                            };
-
-                                            // In a real app, this would send to aviraly26@gmail.com
-                                            console.log('Message to send:', message);
-                                            showNotification('Your message has been sent! We will contact you soon.');
-                                            this.reset();
-                                        });
+                                        const contactForm = document.getElementById('contact-form');
+                                        if (contactForm) {
+                                            contactForm.addEventListener('submit', function(e) {
+                                                e.preventDefault();
+                                                // Simple UX: show notification and reset
+                                                showNotification('Your message has been sent! We will contact you soon.');
+                                                this.reset();
+                                            });
+                                        }
 
                                         // Cart quantity controls
                                         document.addEventListener('click', function(e) {
@@ -1305,13 +1339,99 @@
                                         });
 
                                         // Checkout button
-                                        document.querySelector('.checkout-btn').addEventListener('click', function() {
+                                        document.querySelectorAll('.checkout-btn').forEach(btn => btn.addEventListener('click', function() {
                                             if (cart.length > 0) {
                                                 showNotification('Proceeding to checkout!', 'success');
-                                                // In a real app, this would redirect to checkout page
+                                                // For now open cart sidebar (user can proceed)
+                                                toggleCart();
                                             } else {
                                                 showNotification('Your cart is empty!', 'error');
                                             }
+                                        }));
+
+                                        // User menu interactions: profile, orders, wishlist, logout
+                                        document.querySelectorAll('.user-dropdown a').forEach(link => {
+                                            const href = link.getAttribute('href');
+                                            if (href === '#profile') {
+                                                link.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    showProfileModal();
+                                                });
+                                            } else if (href === '#orders') {
+                                                link.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    showNotification('Orders page is coming soon.');
+                                                });
+                                            } else if (href === '#wishlist') {
+                                                link.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    showNotification('Wishlist is currently empty.');
+                                                });
+                                            }
+                                        });
+
+                                        // Logout
+                                        const logoutBtn = document.querySelector('.logout-btn');
+                                        if (logoutBtn) {
+                                            logoutBtn.addEventListener('click', function(e) {
+                                                e.preventDefault();
+                                                localStorage.removeItem('token');
+                                                localStorage.removeItem('user');
+                                                showNotification('You have been logged out.', 'success');
+                                                // Update header UI quickly
+                                                document.querySelector('.auth-section').style.display = 'block';
+                                                document.querySelector('.user-section').classList.add('hidden');
+                                                setTimeout(() => window.location.reload(), 800);
+                                            });
+                                        }
+
+                                        // Profile modal form submit
+                                        const profileForm = document.getElementById('profile-form');
+                                        if (profileForm) {
+                                            profileForm.addEventListener('submit', async function(e) {
+                                                e.preventDefault();
+                                                const token = localStorage.getItem('token');
+                                                const payload = {
+                                                    fullName: document.getElementById('profile-fullname').value,
+                                                    address: document.getElementById('profile-address').value
+                                                };
+
+                                                if (!token) {
+                                                    showNotification('Please sign in to update profile.', 'error');
+                                                    return;
+                                                }
+
+                                                try {
+                                                    const res = await fetch('/api/users/profile', {
+                                                        method: 'PUT',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'Authorization': `Bearer ${token}`
+                                                        },
+                                                        body: JSON.stringify(payload)
+                                                    });
+
+                                                    if (res.ok) {
+                                                        showNotification('Profile updated successfully!', 'success');
+                                                        closeProfileModal();
+                                                    } else {
+                                                        showNotification('Failed to update profile.', 'error');
+                                                    }
+                                                } catch (err) {
+                                                    console.error(err);
+                                                    showNotification('Error updating profile.', 'error');
+                                                }
+                                            });
+                                        }
+
+                                        // Small UX: toggle user dropdown on click (useful for mobile)
+                                        document.querySelectorAll('.user-menu-btn').forEach(btn => {
+                                            btn.addEventListener('click', function(e) {
+                                                e.preventDefault();
+                                                this.parentElement.classList.toggle('open');
+                                                const dd = this.parentElement.querySelector('.user-dropdown');
+                                                if (dd) dd.style.display = (dd.style.display === 'block') ? 'none' : 'block';
+                                            });
                                         });
                                     }
 
@@ -1458,6 +1578,56 @@
 
                                     function closeModal() {
                                         document.getElementById('quick-view-modal').style.display = 'none';
+                                        document.body.style.overflow = 'auto';
+                                    }
+
+                                    async function showProfileModal() {
+                                        const token = localStorage.getItem('token');
+                                        const modal = document.getElementById('profile-modal');
+
+                                        if (!token) {
+                                            // If not logged in, redirect to auth page
+                                            showNotification('Please sign in to view your profile.', 'error');
+                                            setTimeout(() => window.location.href = '/auth.html', 800);
+                                            return;
+                                        }
+
+                                        // Try to fetch user profile from API, fallback to localStorage
+                                        try {
+                                            const res = await fetch('/api/auth/verify', {
+                                                headers: { 'Authorization': `Bearer ${token}` }
+                                            });
+
+                                            if (res.ok) {
+                                                const user = await res.json();
+                                                document.getElementById('profile-username').value = user.username || '';
+                                                document.getElementById('profile-email').value = user.email || '';
+                                                document.getElementById('profile-fullname').value = user.fullName || '';
+                                                document.getElementById('profile-address').value = user.address || '';
+                                            } else {
+                                                // fallback
+                                                const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                                                document.getElementById('profile-username').value = stored.username || '';
+                                                document.getElementById('profile-email').value = stored.email || '';
+                                                document.getElementById('profile-fullname').value = stored.fullName || '';
+                                                document.getElementById('profile-address').value = stored.address || '';
+                                            }
+                                        } catch (err) {
+                                            console.warn('Profile fetch failed', err);
+                                            const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                                            document.getElementById('profile-username').value = stored.username || '';
+                                            document.getElementById('profile-email').value = stored.email || '';
+                                            document.getElementById('profile-fullname').value = stored.fullName || '';
+                                            document.getElementById('profile-address').value = stored.address || '';
+                                        }
+
+                                        modal.style.display = 'block';
+                                        document.body.style.overflow = 'hidden';
+                                    }
+
+                                    function closeProfileModal() {
+                                        const modal = document.getElementById('profile-modal');
+                                        modal.style.display = 'none';
                                         document.body.style.overflow = 'auto';
                                     }
 
